@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.guillem.pruebatdr">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -15,12 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".RegistroActivity"
+            android:label="Menu"></activity>
 
-        <activity android:name=".RegistroActivity"
-                  android:label="Menu">
-        </activity>
-
+        <activity android:name=".AdminTag"
+            android:label="Admin"></activity>
+        <activity android:name=".AdminTagLogin"
+            android:label="Admin"></activity>
     </application>
-
 
 </manifest>

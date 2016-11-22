@@ -23,8 +23,9 @@ public class RegistroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrio);
-        BaseDeDatos bdd = new BaseDeDatos(this, "BaseDeDatos", null,1);
-        SQLiteDatabase db = bdd.getReadableDatabase();
+        BaseDeDatos bddlocaluser = new BaseDeDatos(this, "BaseDeDatos", null,1);
+        SQLiteDatabase db = bddlocaluser.getReadableDatabase();
+
 
         btaceptar = (Button) findViewById(R.id.button);
         btaceptar.setOnClickListener(new View.OnClickListener() {
@@ -37,13 +38,15 @@ public class RegistroActivity extends AppCompatActivity {
                 String email = ((EditText)findViewById(R.id.et3)).getText().toString();
                 db.execSQL("INSERT INTO BaseDeDatos (nombre,apellidos,email) " + "VALUES ('" + nombre + "','" + apellidos + "','" + email + "')");
                 db.close();
-                siguiente = new Intent(RegistroActivity.this, MainActivity.class);
-                startActivity(siguiente);
+                finish();
 
             }
 
 
-            });}}
+            });
+
+
+    }}
 
 
 
