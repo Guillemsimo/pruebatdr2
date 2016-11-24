@@ -20,13 +20,30 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".RegistroActivity"
-            android:label="Menu"></activity>
+            android:label="Menu">
+        </activity>
 
         <activity android:name=".AdminTag"
-            android:label="Admin"></activity>
+            android:label="Admin"><intent-filter>
+            <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+
+            <data android:mimeType="text/plain" />
+        </intent-filter>
+        </activity>
+
         <activity android:name=".AdminTagLogin"
             android:label="Admin"></activity>
     </application>

@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -24,9 +23,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by guillem on 30/08/2016.
@@ -38,16 +40,18 @@ public class MainActivity extends Activity {
     private NfcAdapter adapter;
     public static final String MIME_TEXT_PLAIN = "text/plain";
     public static final String TAG = "NfcDemo";
-    private GoogleApiClient client;
+    String tagcontent,method,nombre,apell,email,timee;
+    TextView tv11,tv22,tv33;
+
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btn3=(Button)findViewById(R.id.btn3);
-        TextView tv11 = (TextView) findViewById(R.id.tv11);
-        TextView tv22 = (TextView) findViewById(R.id.tv22);
-        TextView tv33 = (TextView) findViewById(R.id.tv33);
+        tv11 = (TextView) findViewById(R.id.tv11);
+        tv22 = (TextView) findViewById(R.id.tv22);
+        tv33 = (TextView) findViewById(R.id.tv33);
         Button bt1 = (Button) findViewById(R.id.bt1);
         BaseDeDatos bdd = new BaseDeDatos(this, "BaseDeDatos", null,1);
         SQLiteDatabase db = bdd.getReadableDatabase();
@@ -93,8 +97,6 @@ public class MainActivity extends Activity {
                 rabogi.show();
             }
         });
-
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
     }
 
@@ -156,55 +158,31 @@ public class MainActivity extends Activity {
 
             String type = intent.getType();
             if (MIME_TEXT_PLAIN.equals(type)) {
-
+                method="registrar2";
+                nombre=tv11.getText().toString();
+                apell=tv22.getText().toString();
+                email=tv33.getText().toString();
+                Calendar date=Calendar.getInstance();
+                timee=date.getTime().toString();
                 Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                new NdefReaderTask().execute(tag);
+                NdefReaderTask ndefReaderTask= new NdefReaderTask();
+                try {
+                    tagcontent=ndefReaderTask.execute(tag).get().toString();
+                    HttpConnect connect=new HttpConnect(context);
+                    String textt=connect.execute(method,nombre,apell,email,timee,tagcontent).get().toString();
+                    Toast tostada=Toast.makeText(this,textt, Toast.LENGTH_LONG);
+                    tostada.show();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
 
             } else {
                 Log.d(TAG, "mal tipus de mime: " + type);
             }
 
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.guillem.tdrnfc/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://com.example.guillem.tdrnfc/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
     }
 
     private class NdefReaderTask extends AsyncTask<Tag, Void, String> {
@@ -254,10 +232,6 @@ public class MainActivity extends Activity {
 
 
         protected void onPostExecute(String result) {
-            if (result != null) {
-                tv3.setText("Contingut: " + result);
-                notificacio();
-            }
         }
     }
 

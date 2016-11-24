@@ -37,11 +37,16 @@
         android:id="@+id/tv6"
         android:layout_weight="0.12" />
 
-    <Button
-        android:text="Crear TAG"
-        android:layout_width="111dp"
+    <Switch
+        android:text="Crear Tag"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btn1" />
+        android:id="@+id/switch1" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.12" />
 
     <Button
         android:text="Tancar Sessió"
